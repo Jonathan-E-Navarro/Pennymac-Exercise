@@ -1,26 +1,29 @@
-'''
-Parses textfile, isolates important pieces of information,
-then uses them to calculate and keep track of the minimum
-difference in amount of goals a team has had for and against them.
-''' 
 import sys
-filename = 'soccer.dat'
-lines = tuple(open(filename, 'r'))
-min_difference = sys.maxsize
-end_team = ""
-
-for line in lines:
-	row = line.split()
-	if len(row)==10:
-		team = row[1]
-		goals_for = row[6]
-		goals_against = row[8]
-		difference = abs(int(goals_for)-int(goals_against))
-		if difference < min_difference:
-			min_difference = difference
-			end_team = team 
-
-print("team with smallest difference: ",end_team)
+import re
 
 
+def smallest_difference(filename):
+    lines = tuple(open(filename, "r"))
+    min_difference = sys.maxsize
+    result = ""
+    FORMAT = 9
+    TEAM = 1
+    FOR = 6
+    AGAINST = 7
 
+    for line in lines:
+        new_line = re.findall(r"\w+", line)
+
+        if len(new_line) == FORMAT:
+            difference = abs(int(new_line[FOR]) - int(new_line[AGAINST]))
+
+            if difference < min_difference:
+                min_difference = difference
+                result = new_line[TEAM]
+
+    print("team with smallest difference: ", result)
+
+
+if __name__ == "__main__":
+    FILENAME = "soccer.dat"
+    smallest_difference(FILENAME)
